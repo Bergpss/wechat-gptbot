@@ -1,9 +1,7 @@
 *.pyc
 .DS_Store
 __pycache__
-config.json
 assets/*.png
 assets/*.mp4
 .ruff_cache
-plugins/**/
 litellm_uuid.txt

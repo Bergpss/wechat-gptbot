@@ -18,7 +18,7 @@ def fetch(path, data):
     }
     base_data.update(data)
     url = f"http://{const.IP}:{const.PORT}/{path}"
-    response = requests.post(url, json={"para": base_data}, timeout=5)
+    response = requests.post(url, json={"para": base_data}, timeout=25)
     return response.json()
 
 

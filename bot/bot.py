@@ -9,12 +9,16 @@ from common.reply import Reply
 class Bot:
     def __init__(self):
         use_azure_chatgpt = conf().get("use_azure_chatgpt", False)
+        # Gemini bot
+        use_gemini = conf().get("use_gemini", False)
         model = conf().get("model", "gpt-3.5-turbo")
         if use_azure_chatgpt:
             from bot.azure_chatgpt import AzureChatGPTBot
 
             self.bot = AzureChatGPTBot()
-
+        elif use_gemini:
+            from bot.gemini import GenimiBot
+            self.bot = GenimiBot()
         elif model in litellm.open_ai_chat_completion_models:
             from bot.chatgpt import ChatGPTBot
 

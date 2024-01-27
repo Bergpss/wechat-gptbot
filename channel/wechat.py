@@ -79,12 +79,16 @@ class WeChatChannel(Channel):
         self.handle_message(cooked_msg)
 
     def handle_message(self, raw_msg):
-        if "wxid" not in raw_msg and raw_msg["status"] == const.SUCCESS:
+        # exclude image message
+        if "wxid" not in raw_msg and raw_msg["status"] == const.SUCCESS and raw_msg["type"] != 3 :
             logger.info("message sent successfully")
             return
         # ignore message sent by self
-        if raw_msg["id2"] == self.personal_info["wx_id"]:
+        if raw_msg["type"] != 3 and raw_msg["id2"] == self.personal_info["wx_id"] :
             logger.info("message sent by self, ignore")
+            return
+        elif raw_msg["type"] == 3 and raw_msg["content"]["id1"] == self.personal_info["wx_id"]:
+            logger.info("immage message sent by self, ignore")
             return
         msg = Message(raw_msg, self.personal_info)
         logger.info(f"message received: {msg}")

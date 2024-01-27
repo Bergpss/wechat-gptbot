@@ -194,19 +194,36 @@ class WeChatChannel(Channel):
         self.send(e3.reply, e3.message)
 
     def send(self, reply: Reply, msg: Message):
-        if reply is None:
-            return
-        if reply.type == ReplyType.IMAGE:
-            img_path = serialize_img(reply.content)
-            wx_id = msg.room_id if msg.is_group else msg.sender_id
-            send_image(img_path, wx_id)
-        elif reply.type == ReplyType.VIDEO:
-            file_path = serialize_video(reply.content)
-            wx_id = msg.room_id if msg.is_group else msg.sender_id
-            send_file(file_path, wx_id)
+        if isinstance(reply, list):
+            replylist = reply
+            for reply in replylist:
+                if reply is None:
+                    return
+                if reply.type == ReplyType.IMAGE:
+                    img_path = serialize_img(reply.content)
+                    wx_id = msg.room_id if msg.is_group else msg.sender_id
+                    send_image(img_path, wx_id)
+                elif reply.type == ReplyType.VIDEO:
+                    file_path = serialize_video(reply.content)
+                    wx_id = msg.room_id if msg.is_group else msg.sender_id
+                    send_file(file_path, wx_id)
+                else:
+                    reply_msg = serialize_text(reply.content, msg)
+                    self.ws.send(reply_msg)
         else:
-            reply_msg = serialize_text(reply.content, msg)
-            self.ws.send(reply_msg)
+            if reply is None:
+                    return
+            if reply.type == ReplyType.IMAGE:
+                img_path = serialize_img(reply.content)
+                wx_id = msg.room_id if msg.is_group else msg.sender_id
+                send_image(img_path, wx_id)
+            elif reply.type == ReplyType.VIDEO:
+                file_path = serialize_video(reply.content)
+                wx_id = msg.room_id if msg.is_group else msg.sender_id
+                send_file(file_path, wx_id)
+            else:
+                reply_msg = serialize_text(reply.content, msg)
+                self.ws.send(reply_msg)
 
     def on_open(self, ws):
         logger.info("[Websocket] connected")

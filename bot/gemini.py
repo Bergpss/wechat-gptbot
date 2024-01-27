@@ -60,7 +60,7 @@ class GenimiBot:
     def reply_img(self, query) -> Reply:
         # gen.save_images(normal_image_links, test_output_dir)
         try:
-            gen = ImageGen(auth_cookie=conf().get("DallE_cookie"))
+            gen = ImageGen(auth_cookie=conf().get("dalle_cookie"))
             normal_image_links = gen.get_images(query)
             image_url = normal_image_links[0]
             logger.info(f"[{self.name}] Image={image_url}")
